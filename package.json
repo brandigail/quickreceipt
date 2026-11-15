@@ -1,0 +1,42 @@
+{
+  "name": "quickreceipt",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/copy-ocr-assets.mjs",
+    "dev": "vite --port 5310 --strictPort",
+    "prebuild": "node scripts/copy-ocr-assets.mjs",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "preview": "vite preview --port 4180 --strictPort"
+  },
+  "dependencies": {
+    "dexie": "^4.4.7",
+    "dexie-react-hooks": "^4.4.0",
+    "jszip": "^3.10.1",
+    "lucide-react": "^1.63.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "fake-indexeddb": "^6.2.6",
+    "oxlint": "^1.89.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.5",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.5",
+    "workbox-window": "^7.4.1"
+  }
+}

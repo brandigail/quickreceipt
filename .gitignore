@@ -21,3 +21,6 @@ Thumbs.db
 npm-debug.log*
 .vscode/*
 !.vscode/extensions.json
+
+# OCR engine copied from node_modules by scripts/copy-ocr-assets.mjs
+public/tesseract/
