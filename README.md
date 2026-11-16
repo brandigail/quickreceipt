@@ -2,7 +2,7 @@
 
 Snap a receipt and the app reads it on your device, pre-filling the shop, date and total. Sort receipts into tax categories, see monthly totals, and export a CSV and a ZIP with the photos. No account, no server, and it works offline.
 
-**Live demo:** coming soon (built and tested locally; not deployed yet)
+**Live demo:** https://quickreceipt-231.netlify.app
 **Run locally:** see [Run locally](#run-locally)
 
 ![Checking what the scanner read](docs/screenshots/review-desktop.png)
