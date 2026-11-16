@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { DEFAULT_CATEGORIES, DEFAULT_SETTINGS, db, deleteCategory, deleteReceipt, ensureCategories, loadSettings, replaceReceipts, saveCategory, saveReceipt, saveSettings } from '../lib/db'
+import { DEFAULT_CATEGORIES, DEFAULT_SETTINGS, db, deleteCategory, deleteReceipt, ensureCategories, loadSettings, replaceReceipts, saveCategory, saveReceipt, saveSettings, seedIfEmpty } from '../lib/db'
 import { buildDemoReceipts } from '../lib/seed'
 import type { Receipt, Settings, TaxCategory } from '../types'
 import { AppDataContext, type AppData } from './appData'
@@ -57,7 +57,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         if (needsDemo) {
           // Wait until the browser is idle so the sample images never compete with the app's own first load.
           await whenIdle()
-          await replaceReceipts(db, await buildDemoReceipts())
+          // Adds only if still empty: the user may have saved a receipt while the demo was being prepared.
+          await seedIfEmpty(db, await buildDemoReceipts())
           markSeeded()
         }
       } catch {

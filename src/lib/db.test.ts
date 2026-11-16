@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Receipt } from '../types'
-import { DEFAULT_CATEGORIES, DEFAULT_SETTINGS, deleteCategory, deleteReceipt, ensureCategories, loadSettings, QuickReceiptDb, replaceReceipts, saveCategory, saveReceipt, saveSettings } from './db'
+import { DEFAULT_CATEGORIES, DEFAULT_SETTINGS, deleteCategory, deleteReceipt, ensureCategories, loadSettings, QuickReceiptDb, replaceReceipts, saveCategory, saveReceipt, saveSettings, seedIfEmpty } from './db'
 
 let database: QuickReceiptDb
 let counter = 0
@@ -34,6 +34,25 @@ describe('receipts', () => {
     await saveReceipt(database, receipt('old'))
     await replaceReceipts(database, [receipt('n1'), receipt('n2')])
     expect((await database.receipts.toArray()).map((r) => r.id).sort()).toEqual(['n1', 'n2'])
+  })
+})
+
+describe('seedIfEmpty', () => {
+  it('adds the demo receipts to an empty database', async () => {
+    expect(await seedIfEmpty(database, [receipt('d1'), receipt('d2')])).toBe(true)
+    expect(await database.receipts.count()).toBe(2)
+  })
+
+  it('never touches a database that already has a receipt, such as one saved while the demo was being prepared', async () => {
+    await saveReceipt(database, receipt('mine'))
+    expect(await seedIfEmpty(database, [receipt('d1'), receipt('d2')])).toBe(false)
+    expect((await database.receipts.toArray()).map((r) => r.id)).toEqual(['mine'])
+  })
+
+  it('cannot be raced into adding the demo twice', async () => {
+    const results = await Promise.all([seedIfEmpty(database, [receipt('d1')]), seedIfEmpty(database, [receipt('d1')])])
+    expect(results.filter(Boolean)).toHaveLength(1)
+    expect(await database.receipts.count()).toBe(1)
   })
 })
 

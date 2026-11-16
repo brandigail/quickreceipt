@@ -70,7 +70,20 @@ export async function deleteCategory(database: QuickReceiptDb, id: string): Prom
   })
 }
 
-/** Replaces everything in one transaction: the receipts are either all swapped or none are. */
+/**
+ * Adds the demo receipts only if there are no receipts at all, and decides that inside the same transaction that writes
+ * them. The demo is added in the background a few seconds after launch, so by then the user may already have saved a
+ * receipt; the demo must never overwrite or remove anything. Returns whether it added the demo.
+ */
+export async function seedIfEmpty(database: QuickReceiptDb, receipts: readonly Receipt[]): Promise<boolean> {
+  return database.transaction('rw', database.receipts, async () => {
+    if ((await database.receipts.count()) > 0) return false
+    await database.receipts.bulkPut([...receipts])
+    return true
+  })
+}
+
+/** Replaces everything in one transaction: the receipts are either all swapped or none are. Only for the explicit "load samples" and "delete all" actions. */
 export async function replaceReceipts(database: QuickReceiptDb, receipts: readonly Receipt[]): Promise<void> {
   await database.transaction('rw', database.receipts, async () => {
     await database.receipts.clear()
